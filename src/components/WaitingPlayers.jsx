@@ -15,7 +15,9 @@ const WaitingPlayers = ({props}) => {
         <div className="round-count">
           <img className="icon" src={iconRound} alt="Round" /> { app.round }
         </div>
-        <img className="icon" src={iconQuestion} alt="Question" />
+        <div className="game-id">
+          { app.gameId }
+        </div>
         <div className="suspects-count">
         <img className="icon" src={iconSuspects} alt="Suspects" /> { app.suspectsLeft }
         </div>

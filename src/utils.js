@@ -1,3 +1,5 @@
+import questions from "./questions";
+
 export const generateGameId = () =>
   Math.random()
     .toString(36)
@@ -39,4 +41,18 @@ export const gameSetup = () => {
     suspects,
     solution
   };
+};
+
+const randomArrayElement = arr => arr[Math.floor(Math.random() * arr.length)];
+
+export const getUniqueQuestion = usedQuestions => {
+  const questionsIds = Object.keys(questions);
+  const questionsTotal = questionsIds.length;
+
+  let questionId = randomArrayElement(questionsIds);
+  while (usedQuestions[questionId] !== undefined) {
+    questionId = randomArrayElement(questionsIds);
+  }
+
+  return questionId;
 };

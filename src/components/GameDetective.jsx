@@ -24,7 +24,9 @@ const GameDetective = ({props}) => {
         <div className="round-count">
           <img className="icon" src={iconRound} alt="Round" /> { app.round }
         </div>
-        <img className="icon" src={iconQuestion} alt="Question" />
+        <div className="game-id">
+          { app.gameId }
+        </div>
         <div className="suspects-count">
         <img className="icon" src={iconSuspects} alt="Suspects" /> { app.suspectsLeft }
         </div>
@@ -35,7 +37,7 @@ const GameDetective = ({props}) => {
             <h2>Waiting for Witness...</h2>
           ) : (
             <h2>
-              Long ass question goes here and it's so long that it might not even fit in this tiny box.
+              { app.currentQuestion && app.currentQuestion.en }
               {
                 app.currentAnswer === true ?
                   <img className="icon-answer" src={iconYes} alt="Yes" />

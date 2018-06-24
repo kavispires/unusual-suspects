@@ -23,9 +23,11 @@ const GameWitness = ({props}) => {
         <div className="round-count">
           <img className="icon" src={iconRound} alt="Round" /> { app.round }
         </div>
-        <img className="icon" src={iconQuestion} alt="Question" />
+        <div className="game-id">
+          { app.gameId }
+        </div>
         <div className="suspects-count">
-        <img className="icon" src={iconSuspects} alt="Suspects" /> { app.suspectsLeft }
+          <img className="icon" src={iconSuspects} alt="Suspects" /> { app.suspectsLeft }
         </div>
       </header>
       <div className="question">
@@ -33,7 +35,7 @@ const GameWitness = ({props}) => {
           app.turn !== 'witness' ? (
             <h2>Waiting for Detective...</h2>
           ) : (
-            <h2>Question goes here</h2>
+            <h2>{ app.currentQuestion && app.currentQuestion[app.language] }</h2>
           )
         }
       </div>
@@ -46,8 +48,18 @@ const GameWitness = ({props}) => {
             <img className="icon-answer" src={iconLoading} alt="Waiting..." />
           ) : (
             <div className="icon-answer-group">
-              <img className="icon-answer" src={iconNo} alt="No" />
-              <img className="icon-answer" src={iconYes} alt="Yes" />
+              <img
+                className="icon-answer"
+                src={iconNo}
+                alt="No"
+                onClick={() => props.answerQuestion(false)}
+              />
+              <img
+                className="icon-answer"
+                src={iconYes}
+                alt="Yes"
+                onClick={() => props.answerQuestion(true)}
+              />
             </div>
           )
         }
