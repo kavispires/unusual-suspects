@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Image from './Image';
+import WaitingPlayers from './WaitingPlayers';
 
 import iconRound from '../images/icon-round.svg';
 import iconQuestion from '../images/icon-question.svg';
@@ -10,14 +11,12 @@ import iconYes from '../images/icon-yes.svg';
 import iconOk from '../images/icon-ok.svg';
 import iconLoading from '../images/icon-loading.svg';
 
-import {
-  RoundIcon,
-  SuspectsIcon,
-  QuestionIcon,
-} from './Icons';
-
 const GameDetective = ({props}) => {
   const { app } = props;
+
+  if (app.turn === 'none') {
+    return <WaitingPlayers props={props} />
+  }
 
   return (
     <div className="container container-center container-detective">
@@ -32,7 +31,7 @@ const GameDetective = ({props}) => {
       </header>
       <div className="question">
         {
-          app.turn !== 'witness' ? (
+          app.turn !== 'detective' ? (
             <h2>Waiting for Witness...</h2>
           ) : (
             <h2>
@@ -71,7 +70,7 @@ const GameDetective = ({props}) => {
       </div>
       <footer className="footer">
         {
-          app.turn !== 'witness' ? (
+          app.turn !== 'detective' ? (
             <img className="icon-answer" src={iconLoading} alt="Waiting..." />
           ) : (
             <img className="icon-answer" src={iconOk} alt="Ok" />

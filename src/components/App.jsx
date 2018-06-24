@@ -2,10 +2,8 @@
 
 import React, { Component } from 'react';
 
-import { LoadingIcon } from './Icons';
-
 import CreateGame from './CreateGame';
-import Game from './Game';
+import GameDetective from './GameDetective';
 import GameWitness from './GameWitness';
 import Home from './Home';
 import JoinGame from './JoinGame';
@@ -53,7 +51,7 @@ class App extends Component {
      * User inputs game id
      */
     if (app.screen === 'game-detective') {
-      return <Game props={ this.props } />
+      return <GameDetective props={ this.props } />
     }
 
     /* WITNESS SCREEN

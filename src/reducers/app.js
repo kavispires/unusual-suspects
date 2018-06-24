@@ -80,7 +80,7 @@ const initialState = {
   solution: "",
   suspects: [],
   suspectsLeft: 0,
-  turn: "witness",
+  turn: "none",
   usedQuestions: {}
 };
 
@@ -201,7 +201,7 @@ export const initGame = () => async dispatch => {
   dispatch(verifyGameId());
 };
 
-export const observeGame = gameId => dispatch => {
+export const observeGame = gameId => (dispatch, getState) => {
   // Create observer
   gameRef = base
     .database()
@@ -211,6 +211,12 @@ export const observeGame = gameId => dispatch => {
       gameDB = snap.val();
       console.info(`Firebase game data ${gameId} updated`);
       console.log(gameDB);
+
+      const turn = getState().app.turn;
+
+      if (turn === "none") {
+        dispatch(verifyGameReady());
+      }
     });
 
   // Set gameId
@@ -270,4 +276,12 @@ export const updatePlayerType = event => async (dispatch, getState) => {
 
 export const updateScreen = screen => dispatch => {
   dispatch(setScreen(screen));
+};
+
+export const verifyGameReady = () => dispatch => {
+  console.log("Verifying GameReady");
+
+  if (gameDB.detective && gameDB.witness) {
+    dispatch(setTurn("witness"));
+  }
 };

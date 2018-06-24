@@ -117,6 +117,17 @@ body {
     }
   }
 
+  .waiting {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    h1 {
+      display: block;
+    }
+  }
+
   .picture {
     flex: 1;
     width: 100%;
