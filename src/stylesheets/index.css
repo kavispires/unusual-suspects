@@ -166,7 +166,9 @@ body {
     margin: 0 1vw; }
     .container-detective .suspects-grid .suspect img {
       cursor: pointer;
-      box-shadow: #222 2px 2px 5px; }
+      box-shadow: #222 2px 2px 5px;
+      max-height: 30vh;
+      width: auto; }
   .container-detective .suspects-grid .number {
     color: #222;
     background: #fff;

@@ -225,6 +225,8 @@ body {
       img {
         cursor: pointer;
         box-shadow: #222 2px 2px 5px;
+        max-height: 30vh;
+        width: auto;
       }
     }
 
