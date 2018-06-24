@@ -1,6 +1,8 @@
 import { base } from "../firebase";
 
-import { gameSetup, generateGameId } from "../utils";
+import { gameSetup, generateGameId, getUniqueQuestion } from "../utils";
+
+import questionsDB from "../questions";
 
 /* ------------------   FIREBASE   ----------------- */
 
@@ -73,6 +75,7 @@ const initialState = {
   gameOver: false,
   isGameIdValid: false,
   isLoaded: false,
+  language: "en",
   playerType: "",
   round: 0,
   screen: "home",
@@ -191,10 +194,15 @@ export const initGame = () => async dispatch => {
     solution: setup.solution,
     suspects: setup.suspects,
     witness: false,
-    detective: false
+    detective: false,
+    currentQuestion: { placeholder: false },
+    usedQuestions: { placeholder: false },
+    currentAnswer: null,
+    turn: "none",
+    round: 0
   };
   console.log(Date.now() - newGame[gameId].timestamp);
-  const response = await dbRef.update(newGame);
+  await dbRef.update(newGame);
   console.log(Date.now() - newGame[gameId].timestamp);
 
   dispatch(observeGame(gameId));
@@ -212,16 +220,22 @@ export const observeGame = gameId => (dispatch, getState) => {
       console.info(`Firebase game data ${gameId} updated`);
       console.log(gameDB);
 
-      const turn = getState().app.turn;
-
-      if (turn === "none") {
+      if (gameDB.turn === "none") {
         dispatch(verifyGameReady());
       }
+
+      if (gameDB.turn === "witness" && gameDB.currentQuestion) {
+        dispatch(setCurrentQuestion(questionsDB[gameDB.currentQuestion]));
+      }
+
+      dispatch(setTurn(gameDB.turn));
+      dispatch(setRound(gameDB.round));
+      dispatch(setCurrentAnswer(gameDB.currentAnswer));
     });
 
   // Set gameId
   dispatch(setGameId(gameDB.gameId));
-  // Set solution
+  // Set solution // TO-DO: do this only for the witness
   dispatch(setSolution(gameDB.solution));
   // Set suspects
   dispatch(setSuspects(gameDB.suspects));
@@ -271,17 +285,92 @@ export const updatePlayerType = event => async (dispatch, getState) => {
   updates[`${gameId}/${type}`] = true;
   updates[`${gameId}/${notType}`] = true;
 
-  const response = await dbRef.update(updates);
+  await dbRef.update(updates);
 };
 
 export const updateScreen = screen => dispatch => {
   dispatch(setScreen(screen));
 };
 
-export const verifyGameReady = () => dispatch => {
+export const verifyGameReady = () => async (dispatch, getState) => {
   console.log("Verifying GameReady");
 
   if (gameDB.detective && gameDB.witness) {
-    dispatch(setTurn("witness"));
+    const turnUpdate = {};
+    turnUpdate[`${gameDB.gameId}/turn`] = "witness";
+    await dbRef.update(turnUpdate);
+
+    const playerType = getState().app.playerType;
+    if (playerType === "witness") {
+      dispatch(startRound());
+    }
   }
+};
+
+// IMPORTANT Only witness access this function
+export const startRound = () => async (dispatch, getState) => {
+  console.log("Starting Round...");
+
+  // Check winning condition
+  console.log("Verifying End Game...");
+  const solution = getState().app.solution;
+  const eliminatedSuspects = getState().app.eliminatedSuspects;
+  const suspectsLeft = getState().app.suspectsLeft;
+
+  // Game ends when detective eliminated the solution
+  if (eliminatedSuspects[solution] !== undefined) {
+    return dispatch(gameOver("lose"));
+  }
+  // Game ends when solution is the only suspect left
+  if (suspectsLeft === 1 && eliminatedSuspects[solution] === undefined) {
+    return dispatch(gameOver("win"));
+  }
+
+  const updates = {};
+
+  // Update Round Count
+  const round = gameDB.round + 1;
+
+  // Select random unique question
+  const questionId = getUniqueQuestion(gameDB.usedQuestions);
+
+  updates[gameDB.gameId] = {
+    ...gameDB,
+    round,
+    currentQuestion: questionId
+  };
+  const time = Date.now();
+  await dbRef.update(updates);
+  console.info(`Update happened in ${Date.now() - time} ms`);
+};
+
+export const gameOver = result => dispatch => {
+  console.log("gameOver");
+  dispatch(setScreen("end-game"));
+
+  if (result === "win") {
+    // TO-DO If result win, save all question and answers to suspect in the database
+  }
+};
+
+export const answerQuestion = answer => async dispatch => {
+  const updates = {};
+
+  const questionId = gameDB.currentQuestion;
+
+  const usedQuestions = Object.assign({}, gameDB.usedQuestions);
+  usedQuestions[questionId] = answer;
+
+  updates[gameDB.gameId] = {
+    ...gameDB,
+    usedQuestions,
+    currentAnswer: answer,
+    turn: "detective"
+  };
+
+  const time = Date.now();
+  await dbRef.update(updates);
+  console.info(`Answer update in ${Date.now() - time} ms`);
+
+  dispatch(setCurrentAnswer(answer));
 };

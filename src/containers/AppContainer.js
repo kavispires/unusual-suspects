@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import App from "../components/App";
 
 import {
+  answerQuestion,
   initFirebase,
   initGame,
   updatePlayerType,
@@ -15,6 +16,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+  answerQuestion,
   initFirebase,
   initGame,
   updatePlayerType,
