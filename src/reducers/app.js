@@ -10,6 +10,8 @@ let dbRef = null;
 let DB = null;
 let gameRef = null;
 let gameDB = null;
+let aiRef = null;
+let aiDB = null;
 
 /* ------------------   ACTIONS   ------------------ */
 
@@ -273,7 +275,6 @@ export const observeGame = gameId => (dispatch, getState) => {
         performOnce = true;
         setTimeout(() => {
           dispatch(startRound());
-          console.log("STARTING NEW ROUND!");
           performOnce = false;
         }, 1000);
       }
@@ -335,7 +336,6 @@ export const updatePlayerType = event => async (dispatch, getState) => {
 
   await dbRef.update(updates);
 
-  // Set solution // TO-DO: do this only for the witness
   if (type === "witness") {
     dispatch(setSolution(gameDB.solution));
   }
@@ -346,8 +346,6 @@ export const updateScreen = screen => dispatch => {
 };
 
 export const verifyGameReady = () => async (dispatch, getState) => {
-  console.log("Verifying GameReady");
-
   if (gameDB.detective && gameDB.witness) {
     const turnUpdate = {};
     turnUpdate[`${gameDB.gameId}/turn`] = "witness";
@@ -363,8 +361,6 @@ export const verifyGameReady = () => async (dispatch, getState) => {
 
 // IMPORTANT Only witness access this function
 export const startRound = () => async (dispatch, getState) => {
-  console.log("Starting Round...");
-
   // Check winning condition
   console.log("Verifying End Game...");
   const solution = gameDB.solution;
@@ -400,7 +396,6 @@ export const startRound = () => async (dispatch, getState) => {
 };
 
 export const gameOver = result => async (dispatch, getState) => {
-  console.log("gameOver");
   const { playerType } = getState().app;
 
   if (playerType === "detective") {
@@ -426,6 +421,63 @@ export const gameOver = result => async (dispatch, getState) => {
 
   if (result === "win") {
     // TO-DO If result win, save all question and answers to suspect in the database
+    aiRef = await base.database().ref("ai");
+    const time = Date.now();
+
+    await aiRef.on("value", snap => {
+      aiDB = snap.val();
+      console.info(
+        `AI database successfully loaded in ${Date.now() - time} ms`
+      );
+      console.log(aiDB);
+    });
+
+    const updateAi = {};
+
+    const aiDBCopy = Object.assign({}, aiDB);
+
+    const solutionId = gameDB.solution;
+    let solutionObj = aiDBCopy[solutionId] || {};
+    let eliminatedObj = {};
+    Object.keys(gameDB.usedQuestions).forEach(questionId => {
+      const answer = gameDB.usedQuestions[questionId];
+      // Record solution's answers
+      if (solutionObj[questionId] === undefined) {
+        solutionObj[questionId] = [answer];
+      } else {
+        solutionObj[questionId].push(answer);
+      }
+      // Record for each other suspects' answers
+      Object.keys(gameDB.eliminatedSuspects).forEach(suspectId => {
+        const eliminatedInstance = aiDBCopy[suspectId] || {};
+
+        if (eliminatedInstance[questionId] === undefined) {
+          eliminatedInstance[questionId] = [!answer];
+        } else {
+          eliminatedInstance[questionId].push(!answer);
+        }
+
+        eliminatedObj[suspectId] = Object.assign(
+          {},
+          eliminatedObj[suspectId],
+          eliminatedInstance
+        );
+      });
+    });
+
+    updateAi[gameDB.solution] = {
+      ...solutionObj
+    };
+
+    Object.keys(eliminatedObj).forEach(key => {
+      updateAi[key] = {
+        ...eliminatedObj[key]
+      };
+    });
+
+    const aiTime = Date.now();
+    await aiRef.update(updateAi);
+    console.info(`AI Update happened in ${Date.now() - aiTime} ms`);
   }
 };
 
