@@ -36,6 +36,13 @@ body {
 .btn-home {
   width: 150px; }
 
+.language-options label {
+  margin-left: 5px;
+  margin-right: 20px; }
+
+.language-options input {
+  margin-right: 10px; }
+
 .icon-small {
   height: 20px;
   transform: translateY(4px);

@@ -20,6 +20,7 @@ const SET_GAME_ID = "SET_GAME_ID";
 const SET_GAME_OVER = "SET_GAME_OVER";
 const SET_IS_GAME_ID_VALID = "SET_IS_GAME_ID_VALID";
 const SET_IS_LOADED = "SET_ISLOADED";
+const SET_LANGUAGE = "SET_LANGUAGE";
 const SET_PLAYER_TYPE = "SET_PLAYER_TYPE";
 const SET_PLAYER_TYPE_OPTIONS = "SET_PLAYER_TYPE_OPTIONS";
 const SET_ROUND = "SET_ROUND";
@@ -48,6 +49,8 @@ export const setIsGameIdValid = payload => dispatch =>
   dispatch({ type: SET_IS_GAME_ID_VALID, payload });
 export const setIsLoaded = payload => dispatch =>
   dispatch({ type: SET_IS_LOADED, payload });
+export const setLanguage = payload => dispatch =>
+  dispatch({ type: SET_LANGUAGE, payload });
 export const setPlayerType = payload => dispatch =>
   dispatch({ type: SET_PLAYER_TYPE, payload });
 export const setPlayerTypeOptions = payload => dispatch =>
@@ -125,6 +128,10 @@ export default function reducer(prevState = initialState, action) {
 
     case SET_IS_LOADED:
       newState.isLoaded = action.payload;
+      break;
+
+    case SET_LANGUAGE:
+      newState.language = action.payload;
       break;
 
     case SET_PLAYER_TYPE:
@@ -219,9 +226,9 @@ export const initGame = () => async dispatch => {
     round: 0,
     score: 0
   };
-  console.log(Date.now() - newGame[gameId].timestamp);
+  const time = Date.now();
   await dbRef.update(newGame);
-  console.log(Date.now() - newGame[gameId].timestamp);
+  console.log(`Database updated in ${time - Date.now()} ms`);
 
   dispatch(observeGame(gameId));
   dispatch(verifyGameId());
@@ -257,13 +264,6 @@ export const observeGame = gameId => (dispatch, getState) => {
       if (gameDB.turn === "witness" && gameDB.currentQuestion) {
         dispatch(setCurrentQuestion(questionsDB[gameDB.currentQuestion]));
       }
-      console.log(
-        "NewRound?",
-        gameDB.turn,
-        getState().app.round,
-        gameDB.round,
-        performOnce
-      );
       if (
         gameDB.round > 1 &&
         gameDB.turn === "witness" &&
@@ -277,10 +277,8 @@ export const observeGame = gameId => (dispatch, getState) => {
           performOnce = false;
         }, 1000);
       }
-      console.log("261 ROUND:", getState().app.round);
       dispatch(setTurn(gameDB.turn));
       dispatch(setRound(gameDB.round));
-      console.log("264 ROUND:", getState().app.round);
       dispatch(setCurrentAnswer(gameDB.currentAnswer));
       dispatch(setEliminatedSuspects(gameDB.eliminatedSuspects));
       dispatch(setSuspectsLeft(gameDB.suspectsLeft));
@@ -495,4 +493,9 @@ export const confirmVotes = () => async (dispatch, getState) => {
   const time = Date.now();
   await dbRef.update(updates);
   console.info(`Votes update in ${Date.now() - time} ms`);
+};
+
+export const updateLanguage = event => dispatch => {
+  const { value } = event.target;
+  dispatch(setLanguage(value));
 };

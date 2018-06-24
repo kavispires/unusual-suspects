@@ -8,6 +8,7 @@ import {
   initFirebase,
   initGame,
   selectSuspect,
+  updateLanguage,
   updatePlayerType,
   updateScreen,
   verifyGameId
@@ -23,6 +24,7 @@ const mapDispatchToProps = {
   initFirebase,
   initGame,
   selectSuspect,
+  updateLanguage,
   updatePlayerType,
   updateScreen,
   verifyGameId
