@@ -219,6 +219,8 @@ export const observeGame = gameId => dispatch => {
   dispatch(setSolution(gameDB.solution));
   // Set suspects
   dispatch(setSuspects(gameDB.suspects));
+  // Set suspectsLeft
+  dispatch(setSuspectsLeft(gameDB.suspects.length));
 };
 
 export const verifyGameId = event => (dispatch, getState) => {

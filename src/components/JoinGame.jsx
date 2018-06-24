@@ -7,7 +7,7 @@ const JoinGame = ({props}) => {
   const { app } = props;
 
   return (
-    <div className="container container-center">
+    <div className="container container-center container-join">
       <h1>Join Game</h1>
       <h3>Enter Game ID:</h3>
       <p>
@@ -52,7 +52,7 @@ const JoinGame = ({props}) => {
       }
       {
         app.playerType ? (
-          <button className="btn btn-block btn-home " onClick={() => props.updateScreen('game')}>Start Game</button>
+          <button className="btn btn-block btn-home " onClick={() => props.updateScreen(`game-${app.playerType}`)}>Start Game</button>
         ) : null
       }
     </div>

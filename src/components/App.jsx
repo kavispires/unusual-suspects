@@ -2,11 +2,11 @@
 
 import React, { Component } from 'react';
 
-
 import { LoadingIcon } from './Icons';
 
 import CreateGame from './CreateGame';
 import Game from './Game';
+import GameWitness from './GameWitness';
 import Home from './Home';
 import JoinGame from './JoinGame';
 import SplashScreen from './SplashScreen';
@@ -49,22 +49,23 @@ class App extends Component {
       return <JoinGame props={ this.props } />
     }
 
-    /* JOIN GAME SCREEN
+    /* DETECTIVE SCREEN
      * User inputs game id
      */
-    if (app.screen === 'game') {
+    if (app.screen === 'game-detective') {
       return <Game props={ this.props } />
+    }
+
+    /* WITNESS SCREEN
+     * User inputs game id
+     */
+    if (app.screen === 'game-witness') {
+      return <GameWitness props={ this.props } />
     }
 
     return (
       <div className="container">
-        <header className="App-header">
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          <LoadingIcon />
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <h1>Error</h1>
       </div>
     );
   }
