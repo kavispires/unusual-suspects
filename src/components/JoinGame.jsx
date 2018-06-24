@@ -29,24 +29,36 @@ const JoinGame = ({props}) => {
       {
         app.isGameIdValid ? (
           <div className="options">
-            <input
-              type="radio"
-              id="player-type-witness"
-              name="player-type"
-              value="witness"
-              onChange={e => props.updatePlayerType(e)}
-              checked={app.playerType === 'witness'}
-            />
-            <label htmlFor="player-type-witness">Witness</label>
-            <input
-              type="radio"
-              id="player-type-detective"
-              name="player-type"
-              value="detective"
-              onChange={e => props.updatePlayerType(e)}
-              checked={app.playerType === 'detective'}
-            />
-            <label htmlFor="player-type-detective">Detective</label>
+            {
+              app.playerTypeOptions === 0 || app.playerTypeOptions === 2 ? (
+                <label htmlFor="player-type-witness">
+                  <input
+                    type="radio"
+                    id="player-type-witness"
+                    name="player-type"
+                    value="witness"
+                    onChange={e => props.updatePlayerType(e)}
+                    checked={app.playerType === 'witness'}
+                  />
+                  Witness
+                </label>
+              ) : null
+            }
+            {
+              app.playerTypeOptions === 1 || app.playerTypeOptions === 2 ? (
+                <label htmlFor="player-type-detective">
+                  <input
+                    type="radio"
+                    id="player-type-detective"
+                    name="player-type"
+                    value="detective"
+                    onChange={e => props.updatePlayerType(e)}
+                    checked={app.playerType === 'detective'}
+                  />
+                  Detective
+                </label>
+              ) : null
+            }
           </div>
         ) : null
       }

@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 
 import CreateGame from './CreateGame';
 import GameDetective from './GameDetective';
+import GameEnd from './GameEnd';
 import GameWitness from './GameWitness';
 import Home from './Home';
 import JoinGame from './JoinGame';
@@ -41,25 +42,33 @@ class App extends Component {
     }
 
     /* JOIN GAME SCREEN
-     * User inputs game id
+     * User inputs game id and select player type
      */
     if (app.screen === 'join') {
       return <JoinGame props={ this.props } />
     }
 
     /* DETECTIVE SCREEN
-     * User inputs game id
+     * User eliminates suspects each round
      */
     if (app.screen === 'game-detective') {
       return <GameDetective props={ this.props } />
     }
 
     /* WITNESS SCREEN
-     * User inputs game id
+     * User answer questions each round
      */
     if (app.screen === 'game-witness') {
       return <GameWitness props={ this.props } />
     }
+
+    /* WITNESS SCREEN
+     * User inputs game id
+     */
+    if (app.screen === 'end-game') {
+      return <GameEnd props={ this.props } />
+    }
+
 
     return (
       <div className="container">

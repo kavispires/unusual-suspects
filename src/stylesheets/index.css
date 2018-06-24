@@ -118,7 +118,11 @@ body {
     display: flex; }
   .container-witness .footer .icon-answer, .container-detective .footer .icon-answer {
     width: 70px;
-    margin: 0 20px; }
+    margin: 0 20px;
+    cursor: pointer; }
+    .container-witness .footer .icon-answer:hover, .container-detective .footer .icon-answer:hover {
+      border: 2px solid white;
+      border-radius: 70px; }
 
 .container-detective .header {
   font-size: 4vh;
@@ -188,6 +192,16 @@ body {
   .container-detective .suspects-grid .suspect-picture {
     width: 100%;
     max-width: 200px; }
+
+.container-game-over ul {
+  list-style: none;
+  padding: 0; }
+
+.container-game-over .picture {
+  max-width: 400px;
+  width: 30%; }
+  .container-game-over .picture img {
+    width: 100%; }
 
 .logo-splash {
   width: 50%;

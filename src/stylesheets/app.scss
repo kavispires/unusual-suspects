@@ -158,6 +158,12 @@ body {
     .icon-answer {
       width: 70px;
       margin: 0 20px;
+      cursor: pointer;
+
+      &:hover {
+        border: 2px solid white;
+        border-radius: 70px;
+      }
     }
   }
 }
@@ -265,6 +271,19 @@ body {
   // }
 }
 
+.container-game-over {
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  .picture {
+    max-width: 400px;
+    width: 30%;
+    img {
+      width: 100%;
+    }
+  }
+}
 
 
 .logo-splash {

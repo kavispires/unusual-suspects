@@ -4,8 +4,10 @@ import App from "../components/App";
 
 import {
   answerQuestion,
+  confirmVotes,
   initFirebase,
   initGame,
+  selectSuspect,
   updatePlayerType,
   updateScreen,
   verifyGameId
@@ -17,8 +19,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   answerQuestion,
+  confirmVotes,
   initFirebase,
   initGame,
+  selectSuspect,
   updatePlayerType,
   updateScreen,
   verifyGameId

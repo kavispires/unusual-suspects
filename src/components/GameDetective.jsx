@@ -52,10 +52,15 @@ const GameDetective = ({props}) => {
         {
           app.suspects.map((suspect, index) => {
             const key = `${suspect}-${index}`;
+            const selectedClass = app.selectedSuspects.indexOf(suspect) !== -1 ? ' selected' : '';
 
             if (app.eliminatedSuspects[suspect] === undefined) {
               return (
-                <div key={key} className="suspect">
+                <div
+                  key={key}
+                  className={`suspect${selectedClass}`}
+                  onClick={() => props.selectSuspect(suspect)}
+                >
                   <span className="number">{ index + 1 }</span>
                   <Image name={suspect} />
                 </div>
@@ -75,7 +80,17 @@ const GameDetective = ({props}) => {
           app.turn !== 'detective' ? (
             <img className="icon-answer" src={iconLoading} alt="Waiting..." />
           ) : (
-            <img className="icon-answer" src={iconOk} alt="Ok" />
+            app.selectedSuspects.length > 0 ? (
+              <img
+                className="icon-answer"
+                src={iconOk}
+                alt="Ok"
+                onClick={() => props.confirmVotes()}
+              />
+            ) : (
+              <p>You must select at least one suspect</p>
+            )
+
           )
         }
       </footer>

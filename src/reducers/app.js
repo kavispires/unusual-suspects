@@ -21,7 +21,9 @@ const SET_GAME_OVER = "SET_GAME_OVER";
 const SET_IS_GAME_ID_VALID = "SET_IS_GAME_ID_VALID";
 const SET_IS_LOADED = "SET_ISLOADED";
 const SET_PLAYER_TYPE = "SET_PLAYER_TYPE";
+const SET_PLAYER_TYPE_OPTIONS = "SET_PLAYER_TYPE_OPTIONS";
 const SET_ROUND = "SET_ROUND";
+const SET_SCORE = "SET_SCORE";
 const SET_SCREEN = "SET_SCREEN";
 const SET_SELECTED_SUSPECTS = "SET_SELECTED_SUSPECTS";
 const SET_SOLUTION = "SET_SOLUTION";
@@ -48,8 +50,12 @@ export const setIsLoaded = payload => dispatch =>
   dispatch({ type: SET_IS_LOADED, payload });
 export const setPlayerType = payload => dispatch =>
   dispatch({ type: SET_PLAYER_TYPE, payload });
+export const setPlayerTypeOptions = payload => dispatch =>
+  dispatch({ type: SET_PLAYER_TYPE_OPTIONS, payload });
 export const setRound = payload => dispatch =>
   dispatch({ type: SET_ROUND, payload });
+export const setScore = payload => dispatch =>
+  dispatch({ type: SET_SCORE, payload });
 export const setScreen = payload => dispatch =>
   dispatch({ type: SET_SCREEN, payload });
 export const setSelectedSuspects = payload => dispatch =>
@@ -77,9 +83,11 @@ const initialState = {
   isLoaded: false,
   language: "en",
   playerType: "",
+  playerTypeOptions: 2,
   round: 0,
   screen: "home",
   selectedSuspects: [],
+  score: 0,
   solution: "",
   suspects: [],
   suspectsLeft: 0,
@@ -123,8 +131,16 @@ export default function reducer(prevState = initialState, action) {
       newState.playerType = action.payload;
       break;
 
+    case SET_PLAYER_TYPE_OPTIONS:
+      newState.playerTypeOptions = action.payload;
+      break;
+
     case SET_ROUND:
       newState.round = action.payload;
+      break;
+
+    case SET_SCORE:
+      newState.score = action.payload;
       break;
 
     case SET_SCREEN:
@@ -197,9 +213,11 @@ export const initGame = () => async dispatch => {
     detective: false,
     currentQuestion: { placeholder: false },
     usedQuestions: { placeholder: false },
+    eliminatedSuspects: { sus0: true },
     currentAnswer: null,
     turn: "none",
-    round: 0
+    round: 0,
+    score: 0
   };
   console.log(Date.now() - newGame[gameId].timestamp);
   await dbRef.update(newGame);
@@ -208,6 +226,8 @@ export const initGame = () => async dispatch => {
   dispatch(observeGame(gameId));
   dispatch(verifyGameId());
 };
+
+let performOnce = false;
 
 export const observeGame = gameId => (dispatch, getState) => {
   // Create observer
@@ -222,21 +242,53 @@ export const observeGame = gameId => (dispatch, getState) => {
 
       if (gameDB.turn === "none") {
         dispatch(verifyGameReady());
+
+        if (gameDB.detective && gameDB.witness) {
+          dispatch(setPlayerTypeOptions(3));
+        } else if (gameDB.detective) {
+          dispatch(setPlayerTypeOptions(0));
+        } else if (gameDB.witness) {
+          dispatch(setPlayerTypeOptions(1));
+        } else {
+          dispatch(setPlayerTypeOptions(2));
+        }
       }
 
       if (gameDB.turn === "witness" && gameDB.currentQuestion) {
         dispatch(setCurrentQuestion(questionsDB[gameDB.currentQuestion]));
       }
-
+      console.log(
+        "NewRound?",
+        gameDB.turn,
+        getState().app.round,
+        gameDB.round,
+        performOnce
+      );
+      if (
+        gameDB.round > 1 &&
+        gameDB.turn === "witness" &&
+        !performOnce &&
+        getState().app.round < gameDB.round
+      ) {
+        performOnce = true;
+        setTimeout(() => {
+          dispatch(startRound());
+          console.log("STARTING NEW ROUND!");
+          performOnce = false;
+        }, 1000);
+      }
+      console.log("261 ROUND:", getState().app.round);
       dispatch(setTurn(gameDB.turn));
       dispatch(setRound(gameDB.round));
+      console.log("264 ROUND:", getState().app.round);
       dispatch(setCurrentAnswer(gameDB.currentAnswer));
+      dispatch(setEliminatedSuspects(gameDB.eliminatedSuspects));
+      dispatch(setSuspectsLeft(gameDB.suspectsLeft));
+      dispatch(setScore(gameDB.score));
     });
 
   // Set gameId
   dispatch(setGameId(gameDB.gameId));
-  // Set solution // TO-DO: do this only for the witness
-  dispatch(setSolution(gameDB.solution));
   // Set suspects
   dispatch(setSuspects(gameDB.suspects));
   // Set suspectsLeft
@@ -264,28 +316,31 @@ export const verifyGameId = event => (dispatch, getState) => {
   }
 };
 
+// Flag to check if user switched type options
+let isASwitch = false;
+
 export const updatePlayerType = event => async (dispatch, getState) => {
+  console.log("IS A SWITCH?", isASwitch);
   const gameId = getState().app.gameId;
 
   let type = event.target.value;
   let notType = type === "detective" ? "detective" : "witness";
 
-  if (gameDB[type]) {
-    if (type === "detective") {
-      type = "witness";
-      notType = "detective";
-    } else {
-      type = "detective";
-      notType = "witness";
-    }
-  }
-
   dispatch(setPlayerType(type));
   const updates = {};
   updates[`${gameId}/${type}`] = true;
-  updates[`${gameId}/${notType}`] = true;
+  if (isASwitch) {
+    updates[`${gameId}/${notType}`] = false;
+  }
+
+  isASwitch = true;
 
   await dbRef.update(updates);
+
+  // Set solution // TO-DO: do this only for the witness
+  if (type === "witness") {
+    dispatch(setSolution(gameDB.solution));
+  }
 };
 
 export const updateScreen = screen => dispatch => {
@@ -298,6 +353,7 @@ export const verifyGameReady = () => async (dispatch, getState) => {
   if (gameDB.detective && gameDB.witness) {
     const turnUpdate = {};
     turnUpdate[`${gameDB.gameId}/turn`] = "witness";
+    turnUpdate[`${gameDB.gameId}/round`] = 1;
     await dbRef.update(turnUpdate);
 
     const playerType = getState().app.playerType;
@@ -313,9 +369,9 @@ export const startRound = () => async (dispatch, getState) => {
 
   // Check winning condition
   console.log("Verifying End Game...");
-  const solution = getState().app.solution;
-  const eliminatedSuspects = getState().app.eliminatedSuspects;
-  const suspectsLeft = getState().app.suspectsLeft;
+  const solution = gameDB.solution;
+  const eliminatedSuspects = gameDB.eliminatedSuspects;
+  const suspectsLeft = gameDB.suspectsLeft;
 
   // Game ends when detective eliminated the solution
   if (eliminatedSuspects[solution] !== undefined) {
@@ -326,27 +382,49 @@ export const startRound = () => async (dispatch, getState) => {
     return dispatch(gameOver("win"));
   }
 
-  const updates = {};
+  // Add score
+  const score =
+    gameDB.score + Object.keys(eliminatedSuspects).length * (11 - gameDB.round);
 
-  // Update Round Count
-  const round = gameDB.round + 1;
+  const updates = {};
 
   // Select random unique question
   const questionId = getUniqueQuestion(gameDB.usedQuestions);
 
   updates[gameDB.gameId] = {
     ...gameDB,
-    round,
-    currentQuestion: questionId
+    currentQuestion: questionId,
+    score
   };
   const time = Date.now();
   await dbRef.update(updates);
   console.info(`Update happened in ${Date.now() - time} ms`);
 };
 
-export const gameOver = result => dispatch => {
+export const gameOver = result => async (dispatch, getState) => {
   console.log("gameOver");
+  const { playerType } = getState().app;
+
+  if (playerType === "detective") {
+    dispatch(setSolution(gameDB.solution));
+  }
+
   dispatch(setScreen("end-game"));
+
+  const score =
+    gameDB.score +
+    Object.keys(gameDB.eliminatedSuspects).length * (11 - gameDB.round);
+
+  const updates = {};
+
+  updates[gameDB.gameId] = {
+    ...gameDB,
+    turn: result,
+    score
+  };
+  const time = Date.now();
+  await dbRef.update(updates);
+  console.info(`Update happened in ${Date.now() - time} ms`);
 
   if (result === "win") {
     // TO-DO If result win, save all question and answers to suspect in the database
@@ -373,4 +451,48 @@ export const answerQuestion = answer => async dispatch => {
   console.info(`Answer update in ${Date.now() - time} ms`);
 
   dispatch(setCurrentAnswer(answer));
+};
+
+export const selectSuspect = suspectId => async (dispatch, getState) => {
+  const selectedSuspects = [...getState().app.selectedSuspects];
+  const suspectIndex = selectedSuspects.indexOf(suspectId);
+
+  if (suspectIndex === -1) {
+    selectedSuspects.push(suspectId);
+  } else {
+    selectedSuspects.splice(suspectIndex, 1);
+  }
+
+  dispatch(setSelectedSuspects(selectedSuspects));
+};
+
+export const confirmVotes = () => async (dispatch, getState) => {
+  const eliminatedSuspects = Object.assign(
+    {},
+    getState().app.eliminatedSuspects
+  );
+
+  const { selectedSuspects, suspects } = getState().app;
+
+  selectedSuspects.forEach(suspectId => (eliminatedSuspects[suspectId] = true));
+
+  const suspectsLeft =
+    suspects.length - Object.keys(eliminatedSuspects).length + 1; // +1 due to firebase object placeholder
+
+  // Update Round Count
+  const round = gameDB.round + 1;
+
+  const updates = {};
+
+  updates[gameDB.gameId] = {
+    ...gameDB,
+    eliminatedSuspects,
+    suspectsLeft,
+    turn: "witness",
+    round
+  };
+
+  const time = Date.now();
+  await dbRef.update(updates);
+  console.info(`Votes update in ${Date.now() - time} ms`);
 };
