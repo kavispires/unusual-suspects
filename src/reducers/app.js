@@ -2,7 +2,8 @@ import { base } from "../firebase";
 
 import { gameSetup, generateGameId, getUniqueQuestion } from "../utils";
 
-import questionsDB from "../questions";
+import questionsDB from "../database/questions";
+import dictionaryDB from "../database/language";
 
 /* ------------------   FIREBASE   ----------------- */
 
@@ -97,7 +98,8 @@ const initialState = {
   suspects: [],
   suspectsLeft: 0,
   turn: "none",
-  usedQuestions: {}
+  usedQuestions: {},
+  text: dictionaryDB
 };
 
 export default function reducer(prevState = initialState, action) {
@@ -226,7 +228,8 @@ export const initGame = () => async dispatch => {
     currentAnswer: null,
     turn: "none",
     round: 0,
-    score: 0
+    score: 0,
+    suspectsLeft: setup.suspects.length
   };
   const time = Date.now();
   await dbRef.update(newGame);

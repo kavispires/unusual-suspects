@@ -23,7 +23,7 @@ const WaitingPlayers = ({props}) => {
         </div>
       </header>
       <div className="waiting">
-        <h1>Waiting for the other player to join...</h1><br />
+        <h1>{ app.text[app.language].waiting }</h1><br />
         <LoadingIcon />
       </div>
     </div>

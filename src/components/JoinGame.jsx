@@ -8,8 +8,8 @@ const JoinGame = ({props}) => {
 
   return (
     <div className="container container-center container-join">
-      <h1>Join Game</h1>
-      <h3>Enter Game ID:</h3>
+      <h1>{ app.text[app.language].join }</h1>
+      <h3>{ app.text[app.language].enter_id }</h3>
       <p>
         <input
           type="text"
@@ -40,7 +40,7 @@ const JoinGame = ({props}) => {
                     onChange={e => props.updatePlayerType(e)}
                     checked={app.playerType === 'witness'}
                   />
-                  Witness
+                  { app.text[app.language].witness }
                 </label>
               ) : null
             }
@@ -55,7 +55,7 @@ const JoinGame = ({props}) => {
                     onChange={e => props.updatePlayerType(e)}
                     checked={app.playerType === 'detective'}
                   />
-                  Detective
+                  { app.text[app.language].detective }
                 </label>
               ) : null
             }
@@ -64,7 +64,7 @@ const JoinGame = ({props}) => {
       }
       {
         app.playerType ? (
-          <button className="btn btn-block btn-home " onClick={() => props.updateScreen(`game-${app.playerType}`)}>Start Game</button>
+          <button className="btn btn-block btn-home " onClick={() => props.updateScreen(`game-${app.playerType}`)}>{ app.text[app.language].start }</button>
         ) : null
       }
     </div>

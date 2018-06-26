@@ -34,7 +34,7 @@ const GameDetective = ({props}) => {
       <div className="question">
         {
           app.turn !== 'detective' ? (
-            <h2>Waiting for Witness...</h2>
+            <h2>{ app.text[app.language].waiting_witness }</h2>
           ) : (
             <h2>
               { app.currentQuestion && app.currentQuestion[app.language] }
@@ -88,7 +88,8 @@ const GameDetective = ({props}) => {
                 onClick={() => props.confirmVotes()}
               />
             ) : (
-              <p>You must select at least one suspect</p>
+              <p>{ app.text[app.language].detective_rule }<br />
+              { app.text[app.language].detective_must }</p>
             )
 
           )

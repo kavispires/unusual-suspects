@@ -33,7 +33,7 @@ const GameWitness = ({props}) => {
       <div className="question">
         {
           app.turn !== 'witness' ? (
-            <h2>Waiting for Detective...</h2>
+            <h2>{ app.text[app.language].waiting_detective }</h2>
           ) : (
             <h2>{ app.currentQuestion && app.currentQuestion[app.language] }</h2>
           )
