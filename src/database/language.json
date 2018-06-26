@@ -1,0 +1,50 @@
+{
+  "en": {
+    "create": "Create Game",
+    "join": "Join Game",
+    "create_rule0": "Creating game...",
+    "create_rule1": "Your game is ready!",
+    "create_rule2": "You need two players: one as a Witness and one as a Detective.",
+    "create_rule3": "Send the game id to a friend and ask they to join you!",
+    "game_id": "Game ID",
+    "waiting_witness": "Waiting for Witness...",
+    "detective_must": "You must select at least one suspect.",
+    "waiting_detective": "Waiting for Detective...",
+    "rounds": "Rounds",
+    "score": "Score",
+    "guilty": "The guilty person was...",
+    "enter_id": "Enter Game ID:",
+    "witness": "Witness",
+    "detective": "Detective",
+    "start": "Start Game",
+    "waiting": "Waiting for the other player to join...",
+    "detective_rule": "The answer to the question is for the guilty person, so eliminate someone that does NOT fit the answer given by the Witness.",
+    "win": "You caught the right person!",
+    "lose": "You lose..."
+  },
+  "br": {
+    "create": "Criar Jogo",
+    "join": "Entrar em Jogo",
+    "create_rule0": "Criando o jogo...",
+    "create_rule1": "Seu jogo está pronto!",
+    "create_rule2": "Você precisa de dois jogadores: um como Testemunha e outro como Detetive.",
+    "create_rule3": "Envie este Código de Jogo para um amigo e peça-o para entrar!",
+    "game_id": "Código do Jogo",
+    "waiting_witness": "Esperando pela Testemunha...",
+    "detective_must": "Você precisa selecionar pelo menos um suspeito.",
+    "waiting_detective": "Esperando pelo Detetive",
+    "rounds": "Rodadas",
+    "score": "Pontuação",
+    "guilty": "O culpado era...",
+    "enter_id": "Digite o Código do Jogo",
+    "witness": "Testemunha",
+    "detective": "Detetive",
+    "start": "Começar Jogo",
+    "waiting": "Eserando outro jogador entrar...",
+    "detective_rule": "A resposta à pergunta é relativa ao culpado, portanto elimine alguém que NÃO se encaixa na resposta dada pela Testemunha.",
+    "win": "Você prenseu a pessoa certa!",
+    "lose": "Você perdeu..."
+  }
+
+
+}

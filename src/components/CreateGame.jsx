@@ -8,23 +8,23 @@ const CreateGame = ({props}) => {
 
   return (
     <div className="container container-center container-create">
-      <h1>Create Game</h1>
+      <h1>{ app.text[app.language].create }</h1>
       {
         !app.gameId ? (
           <div className="loading-create-game">
             <LoadingIcon />
-            <h3>Creating game...</h3>
+            <h3>{ app.text[app.language].create_rule0 }</h3>
           </div>
         ) : (
           <div className="options">
             <p>
-              Your game is ready!<br />
-              You need two players: one as a Witness and one as a Detective. <br />
-              Send the game id to a friend and ask they to join you!
+              { app.text[app.language].create_rule1 }<br />
+              { app.text[app.language].create_rule2 }<br />
+              { app.text[app.language].create_rule3 }
             </p>
-            <h3>Game ID:</h3>
+            <h3>{ app.text[app.language].game_id }</h3>
             <input type="text" value={app.gameId} className="game-id-input" readOnly />
-            <button className="btn btn-block" onClick={() => props.updateScreen('join')}>Join Game</button>
+            <button className="btn btn-block" onClick={() => props.updateScreen('join')}>{ app.text[app.language].join }</button>
           </div>
         )
       }

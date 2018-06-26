@@ -30,8 +30,8 @@ const Home = ({props}) => (
       </label>
     </div>
     <div className="home-options">
-      <button className="btn btn-block btn-home " onClick={() => props.initGame()}>Create Game</button>
-      <button className="btn btn-block btn-home " onClick={() => props.updateScreen('join')}>Join Game</button>
+      <button className="btn btn-block btn-home " onClick={() => props.initGame()}>{ props.app.text[props.app.language].create }</button>
+      <button className="btn btn-block btn-home " onClick={() => props.updateScreen('join')}>{ props.app.text[props.app.language].join }</button>
     </div>
   </div>
 );

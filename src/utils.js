@@ -1,4 +1,4 @@
-import questions from "./questions";
+import questions from "./database/questions";
 
 export const generateGameId = () =>
   Math.random()
