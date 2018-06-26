@@ -206,11 +206,9 @@ body {
   list-style: none;
   padding: 0; }
 
-.container-game-over .picture {
-  max-width: 400px;
-  width: 30%; }
-  .container-game-over .picture img {
-    width: 100%; }
+.container-game-over .picture img {
+  max-height: 50vh;
+  height: auto; }
 
 .logo-splash {
   width: 50%;
