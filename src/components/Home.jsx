@@ -9,7 +9,7 @@ const Home = ({props}) => (
       <label htmlFor="language-en">
         <input
           type="radio"
-          id="lenguage-en"
+          id="language-en"
           name="language"
           value="en"
           onChange={e => props.updateLanguage(e)}
@@ -20,7 +20,7 @@ const Home = ({props}) => (
       <label htmlFor="language-br">
         <input
           type="radio"
-          id="lenguage-br"
+          id="language-br"
           name="language"
           value="br"
           onChange={e => props.updateLanguage(e)}
