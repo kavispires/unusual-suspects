@@ -329,15 +329,6 @@ export const updatePlayerType = event => async (dispatch, getState) => {
   let notType = type === "detective" ? "detective" : "witness";
 
   dispatch(setPlayerType(type));
-  const updates = {};
-  updates[`${gameId}/${type}`] = true;
-  if (isASwitch) {
-    updates[`${gameId}/${notType}`] = false;
-  }
-
-  isASwitch = true;
-
-  await dbRef.update(updates);
 
   if (type === "witness") {
     dispatch(setSolution(gameDB.solution));
@@ -553,4 +544,22 @@ export const confirmVotes = () => async (dispatch, getState) => {
 export const updateLanguage = event => dispatch => {
   const { value } = event.target;
   dispatch(setLanguage(value));
+};
+
+export const startGame = screen => async (dispatch, getState) => {
+  // Check if type is taken
+  const type = getState().app.playerType;
+  if (
+    (gameDB.detective && type === "detective") ||
+    (gameDB.witness && type === "witness")
+  ) {
+    return;
+  }
+
+  const updates = {};
+  updates[`${gameDB.gameId}/${type}`] = true;
+
+  await dbRef.update(updates);
+
+  dispatch(setScreen(screen));
 };

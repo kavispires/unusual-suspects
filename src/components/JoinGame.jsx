@@ -29,42 +29,36 @@ const JoinGame = ({props}) => {
       {
         app.isGameIdValid ? (
           <div className="options">
-            {
-              app.playerTypeOptions === 0 || app.playerTypeOptions === 2 ? (
-                <label htmlFor="player-type-witness">
-                  <input
-                    type="radio"
-                    id="player-type-witness"
-                    name="player-type"
-                    value="witness"
-                    onChange={e => props.updatePlayerType(e)}
-                    checked={app.playerType === 'witness'}
-                  />
-                  { app.text[app.language].witness }
-                </label>
-              ) : null
-            }
-            {
-              app.playerTypeOptions === 1 || app.playerTypeOptions === 2 ? (
-                <label htmlFor="player-type-detective">
-                  <input
-                    type="radio"
-                    id="player-type-detective"
-                    name="player-type"
-                    value="detective"
-                    onChange={e => props.updatePlayerType(e)}
-                    checked={app.playerType === 'detective'}
-                  />
-                  { app.text[app.language].detective }
-                </label>
-              ) : null
-            }
+            <label htmlFor="player-type-witness">
+              <input
+                type="radio"
+                id="player-type-witness"
+                name="player-type"
+                value="witness"
+                disabled={app.playerTypeOptions === 1}
+                onChange={e => props.updatePlayerType(e)}
+                checked={app.playerType === 'witness'}
+              />
+              { app.text[app.language].witness }
+            </label>
+            <label htmlFor="player-type-detective">
+              <input
+                type="radio"
+                id="player-type-detective"
+                name="player-type"
+                value="detective"
+                disabled={app.playerTypeOptions === 0}
+                onChange={e => props.updatePlayerType(e)}
+                checked={app.playerType === 'detective'}
+              />
+              { app.text[app.language].detective }
+            </label>
           </div>
         ) : null
       }
       {
         app.playerType ? (
-          <button className="btn btn-block btn-home " onClick={() => props.updateScreen(`game-${app.playerType}`)}>{ app.text[app.language].start }</button>
+          <button className="btn btn-block btn-home " onClick={() => props.startGame(`game-${app.playerType}`)}>{ app.text[app.language].start }</button>
         ) : null
       }
     </div>
