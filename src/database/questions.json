@@ -61,7 +61,7 @@
   },
   "16": {
      "en": "Do they greet their neighbors?",
-     "br": "Ele(a) cumprimenta seus vizinhos?"
+     "br": "Ele(a) cumprimenta os vizinhos?"
   },
   "17": {
      "en": "Do they have tattoos?",
@@ -81,7 +81,7 @@
   },
   "21": {
      "en": "Do they have unpaid parking tickets?",
-     "br": "Ele(a) tem muidas multas de trânsito?"
+     "br": "Ele(a) tem muitas multas de trânsito?"
   },
   "22": {
      "en": "Did they serve in the army?",
@@ -145,11 +145,11 @@
   },
   "37": {
      "en": "Are they romantic?",
-     "br": "Ele(a) é românticos?"
+     "br": "Ele(a) é romântico?"
   },
   "38": {
      "en": "Do they get along with their colleagues?",
-     "br": "Ele(a) se dá bem com seus colegas de trabalho?"
+     "br": "Ele(a) se dá bem com os colegas de trabalho?"
   },
   "39": {
      "en": "Do they spend a lot of time in the bathroom?",
@@ -177,7 +177,7 @@
   },
   "45": {
      "en": "Do they tip well?",
-     "br": "Ele(a) dão os 10% do garçom sem contestar?"
+     "br": "Ele(a) dá os 10% do garçom sem contestar?"
   },
   "46": {
      "en": "Do they often skip meals?",
@@ -189,7 +189,7 @@
   },
   "48": {
      "en": "Are they married?",
-     "br": "Ele(a) é casados?"
+     "br": "Ele(a) é casado?"
   },
   "49": {
      "en": "Do they use public transportation?",
@@ -241,7 +241,7 @@
   },
   "61": {
      "en": "Do they always pay their taxes?",
-     "br": "Ele(a) sempre pagam seus impostos?"
+     "br": "Ele(a) sempre paga os impostos?"
   },
   "62": {
      "en": "Do they have an annoying voice?",
@@ -389,7 +389,7 @@
   },
   "98": {
      "en": "Do they have a gym membership?",
-     "br": "Ele(a) frequentam uma academia?"
+     "br": "Ele(a) frequenta a academia?"
   },
   "99": {
      "en": "Do they watch documentaries?",
@@ -417,6 +417,6 @@
   },
   "105": {
      "en": "Do they bargain?",
-     "br": "Ele(a) pechincham muito?"
+     "br": "Ele(a) pechincha muito?"
   }
 }
